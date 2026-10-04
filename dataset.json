@@ -1,0 +1,17 @@
+[
+  {
+    "instruction": "Analyze the following Verilog code for semantic or logical errors. Identify the bug, explain the issue, and provide the corrected code.",
+    "input": "module d_ff (input clk, input d, output reg q);\n  always @(posedge clk) begin\n    q = d;\n  end\nendmodule",
+    "output": "### Error Analysis\n* **Error Type:** Semantic Error (Race Condition)\n* **Description:** Blocking assignments (`=`) used inside a sequential `always @(posedge clk)` block. This causes simulation race conditions. Use non-blocking (`<=`) for sequential logic.\n\n### Corrected Code\n```verilog\nmodule d_ff (input clk, input d, output reg q);\n  always @(posedge clk) begin\n    q <= d;\n  end\nendmodule\n```"
+  },
+  {
+    "instruction": "Analyze the following Verilog code for semantic or logical errors. Identify the bug, explain the issue, and provide the corrected code.",
+    "input": "module mux21 (input a, input b, input sel, output reg y);\n  always @(*) begin\n    if (sel)\n      y = a;\n    \n  end\nendmodule",
+    "output": "### Error Analysis\n* **Error Type:** Logical Error (Unintended Latch)\n* **Description:** The `if` statement inside the combinational `always @(*)` block is missing an `else` branch. If `sel` is 0, `y` holds its previous value, inferring an unwanted latch instead of pure combinational logic.\n\n### Corrected Code\n```verilog\nmodule mux21 (input a, input b, input sel, output reg y);\n  always @(*) begin\n    if (sel)\n      y = a;\n    else\n      y = b;\n  end\nendmodule\n```"
+  },
+  {
+    "instruction": "Analyze the following Verilog code for semantic or logical errors. Identify the bug, explain the issue, and provide the corrected code.",
+    "input": "module and_gate (input a, input b, output wire y);\n  assign y = a & b;\n  assign y = a | b; // Conflicting driver\nendmodule",
+    "output": "### Error Analysis\n* **Error Type:** Semantic Error (Multi-Driven Net)\n* **Description:** The output `y` is being driven by multiple continuous assignments simultaneously (both AND and OR logic). This will resolve to an unknown 'X' state in simulation and fail synthesis.\n\n### Corrected Code\n```verilog\nmodule and_gate (input a, input b, output wire y);\n  assign y = a & b;\nendmodule\n```"
+  }
+]
